@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Sensormeter WLAN — One-Pager</title>
+<title>Sensormeter WLAN Lite — One-Pager</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   @page { size: A4; margin: 0; }
@@ -129,11 +129,11 @@
       <line x1="24" y1="24.67" x2="31.07" y2="17.6" stroke="#E9E4D8" stroke-width="2.8" stroke-linecap="round"/>
       <circle cx="24" cy="24.67" r="2.6" fill="#E9E4D8"/>
     </svg>
-    <h1>SENSORMETER WLAN</h1>
+    <h1>SENSORMETER WLAN LITE</h1>
   </div>
-  <div class="subtitle">Generisches ESP32-WROOM-32-DevKit — reines WLAN (kein Ethernet), 1× DHT22, OLED SSD1306, BOOT-Taster-Bedienung, SNMP, Syslog, MQTT/Home Assistant, Anbieter-Branding</div>
+  <div class="subtitle">Generisches ESP32-WROOM-32-DevKit — reines WLAN (kein Ethernet), 1× DHT22, <b>ohne Display</b>, BOOT-Taster-Werksreset, SNMP, Syslog, MQTT/Home Assistant, Anbieter-Branding</div>
   <div class="badges">
-    <span class="badge badge-orange">v0.9.0-rc4 · Beta</span>
+    <span class="badge badge-orange">v1.0.0</span>
     <span class="badge badge-navy">Board-Bringup abgeschlossen · Qualitätskontrolle läuft</span>
     <span class="badge badge-navy">WLAN-only, kein RJ45-Modularanschluss</span>
     <span class="badge badge-navy">SNMP · Syslog · MQTT · Branding · OTA</span>
@@ -150,7 +150,7 @@
       kein Modulstecker/RJ45, keine Erweiterbarkeit. Wer zwei Sensoren oder
       eine Modularerweiterung braucht, nutzt weiterhin Sensormeter bzw.
       Sensormeter PRO.</p>
-      <p>Zeigt Werte lokal auf einem OLED an, stellt sie über Weboberfläche,
+      <p>Display-lose Variante: stellt die Werte über Weboberfläche,
       SNMP und Syslog bereit und meldet sich optional per MQTT-Discovery bei
       Home Assistant an (Sensor-Rolle). Ohne funktionierendes WLAN spannt das
       Gerät einen eigenen Einrichtungs-Access-Point auf (echter SoftAP).</p>
@@ -162,11 +162,11 @@
         <li>Generisches ESP32-WROOM-32-DevKit (30-/38-Pin, CP2102/CH340) —
         günstig, breit verfügbar, kein Spezialboard nötig</li>
         <li>DHT22/AM2302 an GPIO4 (kein Boot-Strapping-Pin)</li>
-        <li>OLED SSD1306, 0,96", 128×64, I2C an GPIO21/22 — ESP32-
-        Standardbelegung, da kein Ethernet-PHY diese Pins blockiert</li>
-        <li>BOOT-Taster (GPIO0) zusätzlich als Bedienelement: kurzer Tipp =
-        Seitenwechsel, 3s+20s Halten = Werksreset (Auslösung erst beim
-        Loslassen, Fail-Safe). EN-Taster bleibt reiner Hardware-Reset</li>
+        <li><b>Kein OLED-Display</b> (Lite) — die früheren I2C-Pins GPIO21/22
+        sind wieder frei</li>
+        <li>BOOT-Taster (GPIO0): 3s+20s Halten = Werksreset (Auslösung erst beim
+        Loslassen, Fail-Safe), Feedback über die Onboard-LED (GPIO2).
+        EN-Taster bleibt reiner Hardware-Reset</li>
       </ul>
     </section>
 
@@ -202,9 +202,9 @@
       </div>
 
       <div class="modgroup">
-        <div class="modgroup-label">Sensorik &amp; Anzeige</div>
+        <div class="modgroup-label">Sensorik &amp; Bedienung</div>
         <div class="pill-row">
-          <span class="pill">SensorManager</span><span class="pill">DisplayManager</span>
+          <span class="pill">SensorManager</span><span class="pill">ButtonManager</span>
         </div>
       </div>
 
@@ -231,8 +231,8 @@
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-box">
-        <div class="flow-title">OLED / Webserver / SNMP / Syslog / MQTT-Discovery</div>
-        <div class="flow-sub">I2C · HTTP + Chart.js · UDP 161 · UDP 514 · Home-Assistant-Discovery</div>
+        <div class="flow-title">Webserver / SNMP / Syslog / MQTT-Discovery</div>
+        <div class="flow-sub">HTTP + Chart.js · UDP 161 · UDP 514 · Home-Assistant-Discovery</div>
       </div>
     </section>
 
@@ -254,11 +254,11 @@
     <section>
       <h2>Status &amp; Kennzahlen</h2>
       <table class="kpi">
-        <tr><td>Version</td><td>0.9.0-rc4 (Beta)</td></tr>
-        <tr><td>Umsetzung</td><td>P0–P7 vollständig + MQTT + Branding</td></tr>
-        <tr><td>Flash-Nutzung</td><td>55,9 %</td></tr>
-        <tr><td>RAM (statisch)</td><td>17,5 %</td></tr>
-        <tr><td>Board-Bringup</td><td>abgeschlossen, QK läuft</td></tr>
+        <tr><td>Version</td><td>1.0.0 (Lite)</td></tr>
+        <tr><td>Umsetzung</td><td>Display entfernt, LED-Taster-Reset</td></tr>
+        <tr><td>Flash-Nutzung</td><td>54,4 %</td></tr>
+        <tr><td>RAM (statisch)</td><td>17,1 %</td></tr>
+        <tr><td>Board-Bringup</td><td>Lite auf HW zu verifizieren</td></tr>
       </table>
     </section>
 
@@ -267,8 +267,8 @@
       <ul>
         <li>WLAN mit DHCP/statischer IP (getrennte Blöcke, Auswahlmenü statt
         Checkbox), echter Fallback-SoftAP „installer" ohne Netzwerk</li>
-        <li>OLED-Seitenrotation: Systemname, WLAN-Signal, Uhrzeit, Sensorwert,
-        Status (6, 7 bei aktivem Branding), BOOT-Taster als Bedienelement</li>
+        <li>BOOT-Taster-Werksreset ohne Display, Feedback über die Onboard-LED
+        (Blinken im Countdown, Dauerlicht bei „Loslassen zum Bestätigen")</li>
         <li>Webserver: Hauptseite mit Verlaufsgraph + Syslog-Tabelle + Log,
         passwortgeschützte Einstellungsseite, REST-API, XML-Import/-Export,
         lokales OTA</li>
@@ -278,8 +278,8 @@
         Fehler-/Warning-Events</li>
         <li>MQTT/Home-Assistant-Discovery: Temperatur/Luftfeuchte (Sensor-
         Rolle), deaktiviert ohne konfigurierten Broker</li>
-        <li>Anbieter-Branding: Name + Logo (128×64, 1bpp), eigene OLED-Seite
-        + Web-Header, Familien-Standardlogo wird automatisch provisioniert</li>
+        <li>Anbieter-Branding: Name + Logo (128×64, 1bpp) im Web-Header,
+        Familien-Standardlogo wird automatisch provisioniert</li>
         <li>Werksreset mit vier wählbaren Umfängen (Alles / Konfiguration /
         Messwerte / Branding), zusätzlich per BOOT-Taster und Serial</li>
         <li>Serial-Kommandozeile (USB): status/dhcp/ip/wifi/dump/upload/reset[
@@ -309,7 +309,7 @@
       <h2>Einstieg</h2>
       <ul>
         <li><b>scripts/flash.ps1 -Project wlan</b> – Setup + Flash</li>
-        <li><b>docs/admin-guide.pdf</b> – Inbetriebnahme, Weboberfläche, SNMP/Syslog/MQTT/Branding, Serial-Kommandozeile</li>
+        <li><b>docs/admin-guide.html</b> – Inbetriebnahme, Weboberfläche, SNMP/Syslog/MQTT/Branding, Serial-Kommandozeile</li>
       </ul>
     </section>
   </div>
@@ -317,7 +317,7 @@
 
 <footer>
   <div>
-    <div class="repo">github.com/peterhagelhof7-cmd/sensormeter-wlan</div>
+    <div class="repo">github.com/peterhagelhof7-cmd/sensormeter-wlan-lite</div>
     <div>Entwickelt mit Unterstützung von Claude (Anthropic) als Coding-Assistent</div>
   </div>
   <div style="text-align:right;max-width:90mm;">

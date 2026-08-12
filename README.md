@@ -24,7 +24,7 @@ kostengünstigere Variante des
 Erweiterbarkeit — wer zwei Sensoren oder eine Modularerweiterung braucht,
 nutzt weiterhin Sensormeter bzw. Sensormeter PRO.
 
-[**One-Pager (PDF)**](docs/sensormeter-wlan-onepager.pdf) — kompakte Projektübersicht auf einer Seite.
+[**One-Pager (HTML)**](docs/sensormeter-wlan-onepager.html) — kompakte Projektübersicht auf einer Seite.
 
 **Schwesterprojekte:**
 [Sensormeter](https://github.com/peterhagelhof7-cmd/sensormeter) (WT32-ETH01, Ethernet + bis zu 2 Sensoren) ·
@@ -35,17 +35,15 @@ nutzt weiterhin Sensormeter bzw. Sensormeter PRO.
 | Datei | Inhalt |
 |---|---|
 | [Schnellstart](https://github.com/peterhagelhof7-cmd/sensormeter-family/blob/main/docs/schnellstart.pdf) (im `sensormeter-family`-Repo) | Gerät in unter 10 Minuten ans Laufen bringen: Strom, Erststart, Netzwerk, erste Anmeldung — für Sensormeter, Sensormeter WLAN und Sensormeter PoE gemeinsam |
-| [docs/systemuebersicht.pdf](docs/systemuebersicht.pdf) | Familienweite Systemübersicht: Funktionsumfang, Zusammenspiel, Zabbix-Anbindung aller vier Projekte (identisch in allen vier Repos) |
-| [docs/sensormeter-wlan-onepager.pdf](docs/sensormeter-wlan-onepager.pdf) ([HTML](docs/sensormeter-wlan-onepager.html)) | One-Pager: Projektübersicht, Architektur, Kennzahlen auf einer Seite |
+| [docs/sensormeter-wlan-onepager.html](docs/sensormeter-wlan-onepager.html) | One-Pager: Projektübersicht, Architektur, Kennzahlen auf einer Seite |
 | [docs/projektfamilie.html](docs/projektfamilie.html) | Architekturskizze: wie die vier Sensormeter-Projekte zusammenhängen |
 | [docs/lastenheft.txt](docs/lastenheft.txt) | Fachliche Anforderungen: Webseite, Einstellungen, SNMP-OIDs, Netzwerklogik, Zustandsmodell |
 | [docs/pflichtenheft.txt](docs/pflichtenheft.txt) | Technische Umsetzung: FreeRTOS-Tasks, Softwaremodule, Speicherlayout, Fehlerbehandlung |
 | [docs/implementierungsplan.html](docs/implementierungsplan.html) | Visueller Implementierungsplan P0–P7 (lokal im Browser öffnen) |
 | [docs/stueckliste.md](docs/stueckliste.md) | Bauteile pro Gerät + Preisschätzung |
 | [docs/entscheidungen.md](docs/entscheidungen.md) | Entscheidungsprotokoll: Boardwahl, Pinbelegung, OTA-Partitionierung, SNMP-Kompatibilität, bekannte Abweichungen |
-| [docs/verdrahtung.pdf](docs/verdrahtung.pdf) | Pin-Tabelle + Verdrahtungsskizze (DHT22) |
-| [docs/verdrahtungsplan.html](docs/verdrahtungsplan.html) | Interaktive Kurzfassung derselben Verdrahtung - Klick auf einen Draht im Schema hebt ihn hervor und zeigt Start-/Zielpin |
-| [docs/admin-guide.pdf](docs/admin-guide.pdf) ([HTML](docs/admin-guide.html)) | Admin-Guide: Inbetriebnahme, Weboberfläche, SNMP/Syslog/MQTT/Branding, Serial-Kommandozeile |
+| [docs/verdrahtungsplan.html](docs/verdrahtungsplan.html) | Verdrahtung (DHT22): interaktives Schema - Klick auf einen Draht hebt ihn hervor und zeigt Start-/Zielpin |
+| [docs/admin-guide.html](docs/admin-guide.html) | Admin-Guide: Inbetriebnahme, Weboberfläche, SNMP/Syslog/MQTT/Branding, Serial-Kommandozeile |
 | [docs/PRTG.md](docs/PRTG.md) | PRTG-Integration: OIDs, Geräte-Template-Import, Sensor-Übersicht |
 | [docs/prtg-template-sensormeter-wlan.odt](docs/prtg-template-sensormeter-wlan.odt) | Fertiges PRTG-Geräte-Template für Auto-Discovery |
 | [docs/ZABBIX.md](docs/ZABBIX.md) | Zabbix-Integration: OIDs, Template-Import, Host-Einrichtung, Trigger |
@@ -116,7 +114,7 @@ flasht):
 scripts\flash.ps1 -Project wlan
 ```
 
-Details siehe [docs/admin-guide.pdf](docs/admin-guide.pdf). Manuelle
+Details siehe [docs/admin-guide.html](docs/admin-guide.html). Manuelle
 Alternative ohne Skript:
 
 ```

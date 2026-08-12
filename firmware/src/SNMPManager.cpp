@@ -65,7 +65,7 @@ void SNMPManager::begin() {
 
   _agent.addReadWriteStringHandler(OID_SYSTEM_NAME, &_systemNamePtr, sizeof(_systemName), false);
   _agent.addReadOnlyStaticStringHandler(OID_FIRMWARE, std::string(DEVICE_FIRMWARE_VERSION));
-  _agent.addReadOnlyStaticStringHandler(OID_SYSTEM_TYPE, std::string("Sensormeter WLAN"));
+  _agent.addReadOnlyStaticStringHandler(OID_SYSTEM_TYPE, std::string("Sensormeter WLAN Lite"));
 
   _agent.addReadWriteStringHandler(OID_WLAN_IP, &_wlanIpPtr, sizeof(_wlanIp), false);
   _agent.addIntegerHandler(OID_WLAN_RSSI, &_wlanRssi, false);

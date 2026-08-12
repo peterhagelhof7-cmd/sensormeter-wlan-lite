@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Sensormeter WLAN — Admin-Guide</title>
+<title>Sensormeter WLAN Lite — Admin-Guide</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
@@ -151,13 +151,13 @@
       <line x1="24" y1="24.67" x2="31.07" y2="17.6" stroke="#E9E4D8" stroke-width="2.8" stroke-linecap="round"/>
       <circle cx="24" cy="24.67" r="2.6" fill="#E9E4D8"/>
     </svg>
-    <h1>SENSORMETER WLAN</h1>
+    <h1>SENSORMETER WLAN LITE</h1>
   </div>
-  <div class="subtitle">Admin-Guide — Inbetriebnahme, OLED-Anzeige und Konfiguration über die Weboberfläche</div>
+  <div class="subtitle">Admin-Guide — Inbetriebnahme und Konfiguration über die Weboberfläche</div>
   <div class="badges">
     <span class="badge badge-orange">v0.9.0-rc4 · Beta</span>
     <span class="badge">ESP32-WROOM-32 DevKit · WLAN-only</span>
-    <span class="badge">DHT22 · OLED · Webserver · SNMP · Syslog · MQTT/HA · Branding · OTA</span>
+    <span class="badge">DHT22 · Webserver · SNMP · Syslog · MQTT/HA · Branding · OTA</span>
     <span class="badge">github.com/peterhagelhof7-cmd/sensormeter-wlan</span>
   </div>
 </div>
@@ -165,7 +165,7 @@
 <div class="toc">
   <div class="toc-row"><a href="#sec1">1. Erste Inbetriebnahme (Auspacken, Anschließen, Flashen)</a></div>
   <div class="toc-row"><a href="#sec2">2. Erststart am Gerät (WLAN-Ersteinrichtung)</a></div>
-  <div class="toc-row"><a href="#sec3">3. OLED-Anzeige</a></div>
+  <div class="toc-row"><a href="#sec3">3. Werksreset über den BOOT-Taster</a></div>
   <div class="toc-row"><a href="#sec4">4. Konfiguration über die Weboberfläche</a></div>
   <div class="toc-row"><a href="#sec5">5. Firmware-Updates</a></div>
   <div class="toc-row"><a href="#sec6">6. SNMP, Syslog, MQTT &amp; Branding (für Netzwerk-Admins)</a></div>
@@ -178,12 +178,11 @@
 <h1 class="section" id="sec1"><span class="num">1</span>Erste Inbetriebnahme</h1>
 
 <h2>1.1 Auspacken &amp; Hardware-Übersicht</h2>
-<p>Das Gerät besteht aus drei Teilen, die per Jumper-Kabeln verbunden sind
-(siehe <span class="code">docs/verdrahtung.pdf</span> für das genaue
+<p>Das Gerät besteht aus zwei Teilen, die per Jumper-Kabeln verbunden sind
+(siehe <span class="code">docs/verdrahtungsplan.html</span> für das genaue
 Anschlussschema): ein generisches <b>ESP32-WROOM-32-DevKit</b> (30- oder
-38-Pin, USB-C), ein <b>DHT22/AM2302</b>-Temperatur-/Feuchtesensor
-(3-Pin-Modul) und ein <b>OLED-Display SSD1306</b> (0,96", 128×64, I2C,
-4-Pin).</p>
+38-Pin, USB-C) und ein <b>DHT22/AM2302</b>-Temperatur-/Feuchtesensor
+(3-Pin-Modul).</p>
 
 <div class="board-wrap">
   <div class="devkit">
@@ -199,10 +198,9 @@ Anschlussschema): ein generisches <b>ESP32-WROOM-32-DevKit</b> (30- oder
     USB-C-Anschluss (Board-Seitenverhältnis ca. 1:2, 2,7×5,4cm) — genaue
     Position je nach Boardvariante leicht abweichend:</p>
     <ul>
-      <li><b>BOOT</b> (links, orange hervorgehoben) — dient zusätzlich als
-      Bedienelement im laufenden Betrieb: kurzer Tipp blättert manuell
-      durch die OLED-Seiten, langes Halten löst einen Werksreset aus
-      (Details siehe Abschnitt 3.1). Kein zusätzliches Bauteil nötig — es
+      <li><b>BOOT</b> (links, orange hervorgehoben) — dient zusätzlich dem
+      Werksreset: langes Halten löst einen Werksreset aus (Feedback über die
+      Onboard-LED, Details siehe Abschnitt 3). Kein zusätzliches Bauteil nötig — es
       ist derselbe Taster, der auch zum Flashen der Firmware verwendet
       wird.</li>
       <li><b>EN</b> (rechts) — reiner Hardware-Reset, startet das Gerät
@@ -217,7 +215,7 @@ Anschlussschema): ein generisches <b>ESP32-WROOM-32-DevKit</b> (30- oder
   Wird EN losgelassen, während BOOT weiterhin gehalten wird (oder beide
   zusammen gedrückt und dann EN zuerst losgelassen), startet der Chip nicht
   normal, sondern wechselt in den seriellen <b>Flash-Modus
-  (Bootloader)</b> — das OLED bleibt dunkel, das Gerät reagiert nicht und
+  (Bootloader)</b> — das Gerät reagiert nicht und
   verbindet sich nicht ins WLAN. Genau diese Tastenkombination nutzt auch
   der automatische Reset-Schaltkreis beim Firmware-Flashen (Abschnitt
   1.4/5). Ein normaler Reset über EN allein (BOOT nicht gedrückt) bringt
@@ -231,10 +229,8 @@ Anschlussschema): ein generisches <b>ESP32-WROOM-32-DevKit</b> (30- oder
   tatsächliche Aufdruck auf der Platine selbst („Boot"/„EN"), nicht die
   Pfeil-Beschriftung im Foto.
 </div>
-<p>Anders als das Schwesterprojekt Sensormeter Display hat dieses Gerät
-keinen Touchscreen — das OLED zeigt nur Informationen an (Abschnitt 3),
-alle Einstellungen erfolgen ausschließlich über die Weboberfläche
-(Abschnitt 4).</p>
+<p>Dieses Gerät hat weder Display noch Touchscreen — alle Anzeigen und
+Einstellungen erfolgen ausschließlich über die Weboberfläche (Abschnitt 4).</p>
 
 <h2>1.2 Anschließen an den Computer</h2>
 <p>Das DevKit per USB-C-Kabel mit einem Windows-Rechner verbinden. Windows
@@ -300,12 +296,10 @@ ist.</p>
 
 <h2>2.1 Boot-Ablauf</h2>
 <ol>
-  <li><b>BOOT / INIT</b> — kurze Initialisierung, das OLED zeigt
-  Systemname und einen Countdown</li>
+  <li><b>BOOT / INIT</b> — kurze Initialisierung</li>
   <li><b>WLAN_CHECK</b> — Verbindungsversuch mit gespeicherten
   Zugangsdaten, bis zu 5 Minuten lang</li>
-  <li>Bei Erfolg: <b>Normalbetrieb</b>, das OLED wechselt zu den
-  rotierenden Infoseiten (Abschnitt 3)</li>
+  <li>Bei Erfolg: <b>Normalbetrieb</b> — die Werte sind über die Weboberfläche erreichbar (Abschnitt 4)</li>
   <li>Ohne gespeicherte Zugangsdaten oder nach 5 Minuten ohne Verbindung:
   <b>Fallback-Modus</b> — das Gerät spannt einen eigenen Access Point auf
   (siehe Abschnitt 2.2)</li>
@@ -320,9 +314,8 @@ ist.</p>
   <span class="code">192.168.4.1</span> mit Subnetzmaske
   <span class="code">255.255.255.0</span>, DHCP-Server aktiv (vergibt
   automatisch IP-Adressen an verbundene Geräte). Kein Internetzugang über
-  diesen Access Point — er dient ausschließlich der Ersteinrichtung. Das
-  OLED zeigt währenddessen nur „Fallback aktiv" + die eigene IP (Abschnitt
-  3).
+  diesen Access Point — er dient ausschließlich der Ersteinrichtung. Die Geräte-IP im Fallback-Netz ist fest
+  <span class="code">192.168.4.1</span>.
 </div>
 <ol>
   <li>Mit einem Smartphone, Tablet oder Laptop im WLAN nach
@@ -352,185 +345,38 @@ ist.</p>
 </div>
 
 <!-- ============================================================ -->
-<h1 class="section" id="sec3"><span class="num">3</span>OLED-Anzeige</h1>
-<p>Das 128×64-Display zeigt im Normalbetrieb sechs Infoseiten im
-10-Sekunden-Takt nacheinander. Alle Seiten sind horizontal und vertikal
-zentriert und nutzen eine feste, bewusst große Schrift; passt eine Zeile
-nicht auf einmal (z. B. eine lange WLAN-SSID), läuft sie waagerecht durch,
-bis sie komplett zu lesen war, statt die Schrift zu verkleinern.</p>
+<h1 class="section" id="sec3"><span class="num">3</span>Werksreset über den BOOT-Taster</h1>
+<p>Die Lite-Variante hat <b>kein Display</b>. Alle Anzeigen (Sensorwerte, Netzwerkstatus,
+Verlauf) laufen über die Weboberfläche (Abschnitt 4). Direkt am Gerät gibt es nur einen
+Bedienweg: den <b>Werksreset über den BOOT-Taster</b> — ein Notfall-/Recovery-Weg, der ganz
+ohne Netzwerkzugriff funktioniert (auch während des Bootens oder im Fallback-AP).</p>
 
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:14mm; font-size:5mm; font-weight:700;">Sensormeter</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Seite 1 — Systemname</b><br>Der frei editierbare Anzeigename des
-    Geräts (Abschnitt 4, Feld „Systemname") — reagiert auf Änderungen über
-    die Weboberfläche. Die feste Kennzeichnung „Sensormeter"/„WLAN"
-    erscheint stattdessen auf der Status-Seite (Seite 5) und während des
-    Bootens.</p>
-  </div>
-</div>
-
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:9mm; font-size:4.2mm; font-weight:700;">Heimnetz</div>
-    <div class="oled-text" style="top:17mm; font-size:4.2mm; font-weight:700;">192.168.1.42</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Seite 2 — WLAN</b><br>Zeile 1: verbundene SSID. Zeile 2: aktuelle
-    IP-Adresse — der schnellste Weg, um die Adresse für die Weboberfläche
-    (Abschnitt 4) abzulesen. „---" in beiden Zeilen, solange keine
-    Verbindung besteht.</p>
-  </div>
-</div>
-
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:6mm; font-size:5mm; font-weight:700;">08.07.2026</div>
-    <div class="oled-text" style="top:15mm; font-size:5mm; font-weight:700;">14:32:07</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Seite 3 — Uhrzeit</b><br>Datum und Uhrzeit per NTP
-    (<span class="code">de.pool.ntp.org</span>). Zeigt
-    „<span class="code">--:--:--</span>", solange die Zeit noch nicht
-    synchronisiert ist.</p>
-  </div>
-</div>
-
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:13mm; font-size:5mm; font-weight:700;">21.4C 53%</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Seite 4 — Sensorwert</b><br>Aktuelle DHT22-Messung (Temperatur,
-    Luftfeuchte). Zeigt „<span class="code">Sensor --</span>", falls noch
-    kein gültiger Messwert vorliegt (Sensor wird alle 60 Sekunden
-    abgefragt).</p>
-  </div>
-</div>
-
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:4mm; font-size:4mm; font-weight:700;">WLAN OK</div>
-    <div class="oled-text" style="top:12mm; font-size:3.6mm; font-weight:700;">v0.9.0-rc4</div>
-    <div class="oled-text" style="top:19mm; font-size:3.2mm;">Sensormeter WLAN</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Seite 5 — Status</b><br>Zeile 1: „WLAN OK" im Normalbetrieb,
-    „WLAN --" bei fehlender Verbindung (im Fallback-Modus wird stattdessen
-    die dedizierte Fallback-Seite gezeigt, siehe unten). Zeile 2: aktuelle
-    Firmware-Version. Zeile 3: fester Systemtyp „Sensormeter WLAN"
-    (identisch zum SNMP-Wert, siehe Abschnitt 6.1).</p>
-  </div>
-</div>
-
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:9mm; font-size:4mm; font-weight:700;">WLAN-Signal</div>
-    <div class="oled-text" style="top:17mm; font-size:4.6mm; font-weight:700;">-52dB</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Seite 6 — WLAN-Signal</b><br>Aktuelle Empfangsstärke (RSSI) in
-    dBm — je näher an 0, desto besser der Empfang. Zeigt
-    „<span class="code">---</span>", solange keine WLAN-Verbindung
-    besteht.</p>
-    <table style="margin-top:1mm;">
-      <tr><th>Bereich</th><th>Bewertung</th><th>Praxis</th></tr>
-      <tr><td>-30dB bis -60dB</td><td>Gut</td><td>Stabile Verbindung, für Dauerbetrieb unproblematisch</td></tr>
-      <tr><td>-61dB bis -70dB</td><td>Ausreichend</td><td>Funktioniert, gelegentliche Aussetzer bei Störungen möglich</td></tr>
-      <tr><td>schlechter als -70dB</td><td>Schlecht</td><td>Verbindungsabbrüche wahrscheinlich (Fallback-Modus, Abschnitt 2.2) — Gerät näher am Router platzieren oder WLAN-Repeater einsetzen</td></tr>
-    </table>
-  </div>
-</div>
-
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:5mm; font-size:3.6mm; font-weight:700;">Sensormeter</div>
-    <div class="oled-text" style="top:12mm; font-size:3.6mm; font-weight:700;">WLAN</div>
-    <div class="oled-text" style="top:19mm; font-size:3.2mm;">42 warte</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Boot-Countdown</b><br>Während BOOT/INIT/WLAN_CHECK (vor der
-    Seitenrotation oben): „Sensormeter"/„WLAN"/ein Countdown von 100 auf 0
-    gefolgt von „warte". Der Countdown läuft schneller als die tatsächliche
-    Wartezeit ab und bleibt danach bei 0 stehen.</p>
-  </div>
-</div>
-
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:9mm; font-size:4.2mm; font-weight:700;">Fallback aktiv</div>
-    <div class="oled-text" style="top:17mm; font-size:4.6mm; font-weight:700;">192.168.4.1</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Fallback-Modus</b><br>Solange das Gerät den eigenen Access Point
-    „installer" hostet (Abschnitt 2.2), zeigt das OLED ausschließlich diese
-    Seite — keine Seitenrotation, da nur die eigene IP zur Einrichtung
-    relevant ist.</p>
-  </div>
-</div>
-
-<h2>3.1 Taster-Bedienung (BOOT-Taster)</h2>
-<p>Der BOOT-Taster (siehe Board-Skizze in Abschnitt 1.1) dient im laufenden
-Betrieb zusätzlich als Bedienelement — in jedem Systemzustand, auch während
-des Bootens oder im Fallback-Modus:</p>
-<ul>
-  <li><b>Kurzer Tipp</b> (unter 3 Sekunden): schaltet manuell zur nächsten
-  Seite der Rotation, unabhängig vom 10-Sekunden-Takt</li>
-  <li><b>3 Sekunden oder länger gehalten:</b> das OLED zeigt eine
-  Reset-Bestätigung mit einem 20-Sekunden-Countdown</li>
-</ul>
-
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:9mm; font-size:4mm; font-weight:700;">Werksreset?</div>
-    <div class="oled-text" style="top:17mm; font-size:3.6mm; font-weight:700;">14s halten</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Reset-Countdown (3–23 Sekunden gehalten)</b><br>Zählt von 20 auf
-    0 herunter. Wird der Taster vor Ablauf losgelassen, passiert nichts —
-    das OLED kehrt zur normalen Seitenrotation zurück.</p>
-  </div>
-</div>
-
-<div class="sketch-wrap">
-  <div class="device"><div class="screen">
-    <div class="oled-text" style="top:9mm; font-size:3.4mm; font-weight:700;">Loslassen zum</div>
-    <div class="oled-text" style="top:17mm; font-size:3.4mm; font-weight:700;">Bestaetigen</div>
-  </div></div>
-  <div class="sketch-notes">
-    <p><b>Fail-Safe: Auslösung erst beim Loslassen</b><br>Nach Ablauf der
-    20 Sekunden wird der Reset nicht automatisch ausgeführt, solange der
-    Taster weiter gedrückt bleibt — erst das tatsächliche Loslassen danach
-    löst ihn aus. Ein verklemmter oder defekter Taster, der dauerhaft
-    geschlossen bleibt, kann dadurch nie von selbst einen Reset
-    auslösen.</p>
-  </div>
-</div>
-
-<div class="callout">
-  <div class="callout-title">Was wird zurückgesetzt?</div>
-  Der Taster-Reset entspricht dem Umfang „Nur Konfiguration" auf der
-  Einstellungsseite (Abschnitt 4.2), allerdings ohne dessen Branding-Erhalt:
-  WLAN-Zugangsdaten, Web-Passwort, Kalibrierung, Syslog-/SNMP-Einstellungen
-  <b>und</b> der Anbietername werden auf Werkswerte zurückgesetzt (ein
-  hinterlegtes Logo bleibt als Datei bestehen), das Gerät startet neu. Der
-  gespeicherte 7-Tage-Verlauf bleibt dabei erhalten. Praktisch für den Fall,
-  dass das
-  Gerät wegen falscher WLAN-Zugangsdaten gar nicht mehr über das Netzwerk
-  erreichbar ist — funktioniert komplett ohne PC/USB. Dasselbe lässt sich
-  bei angeschlossenem USB-Kabel auch über das <span class="code">reset</span>-Kommando
-  der Serial-Kommandozeile auslösen, siehe Abschnitt 8.
-</div>
+<h2>3.1 Ablauf</h2>
+<ol>
+  <li>Den <b>BOOT-Taster</b> (auf dem DevKit meist mit „BOOT" bzw. „IO0" beschriftet)
+  gedrückt halten.</li>
+  <li>Nach <b>3 Sekunden</b> beginnt die <b>Onboard-LED</b> (GPIO2) zu <b>blinken</b> —
+  der 20-Sekunden-Countdown läuft.</li>
+  <li>Nach weiteren <b>20 Sekunden</b> (also ca. 23 s Gesamt-Haltezeit) leuchtet die LED
+  <b>dauerhaft</b>: „Loslassen zum Bestätigen".</li>
+  <li>Jetzt <b>loslassen</b> → die Einstellungen werden auf Werkszustand zurückgesetzt
+  (config.xml auf Defaults), das Gerät startet neu. Der <b>Messwert-Verlauf bleibt
+  erhalten</b>.</li>
+</ol>
+<p><b>Fail-Safe:</b> Der Reset wird bewusst erst <b>beim Loslassen</b> nach Ablauf der vollen
+Haltezeit ausgelöst — ein verklemmter/defekter Taster kann so nie von selbst einen Reset
+auslösen. Wer vorher loslässt (LED blinkt noch), bricht den Vorgang folgenlos ab.</p>
+<p>Fehlt auf dem konkreten DevKit die Onboard-LED an GPIO2, funktioniert der Reset trotzdem —
+nur ohne sichtbares Feedback. Dasselbe lässt sich bei angeschlossenem USB-Kabel auch über das
+<span class="code">reset</span>-Kommando der Serial-Kommandozeile auslösen (Abschnitt 8).</p>
 
 <!-- ============================================================ -->
 <h1 class="section" id="sec4"><span class="num">4</span>Konfiguration über die Weboberfläche</h1>
 
 <h2>4.1 Zugriff</h2>
 <ol>
-  <li>IP-Adresse des Geräts ermitteln — am einfachsten über das OLED
-  (Abschnitt 3, Seite 2) — oder direkt per Namen zugreifen:
+  <li>IP-Adresse des Geräts ermitteln (z. B. über die DHCP-Client-Liste des Routers)
+  — oder direkt per Namen zugreifen:
   <span class="code">http://&lt;systemname&gt;.local/</span> (mDNS)</li>
   <li>Im Browser eines Geräts im selben Netzwerk aufrufen:
   <span class="code">http://&lt;IP-Adresse&gt;/</span></li>
@@ -553,7 +399,7 @@ des Bootens oder im Fallback-Modus:</p>
 <h3>System</h3>
 <table>
   <tr><th>Feld</th><th>Bedeutung</th></tr>
-  <tr><td>Systemname</td><td>Freier Anzeigename des Geräts (Titel der Weboberfläche, Basis für den mDNS-Namen, auch auf der OLED-Seite 1 sichtbar). Default: „Sensormeter WLAN".</td></tr>
+  <tr><td>Systemname</td><td>Freier Anzeigename des Geräts (Titel der Weboberfläche, Basis für den mDNS-Namen). Default: „Sensormeter WLAN Lite".</td></tr>
   <tr><td>Neues Passwort</td><td>Neues Web-Passwort (Benutzername immer „admin"). Leer lassen, um das aktuelle Passwort beizubehalten.</td></tr>
 </table>
 
@@ -628,13 +474,12 @@ Temperatur/Luftfeuchte) — siehe Abschnitt 6.3.</p>
 <h3>Anbieter-Branding</h3>
 <table>
   <tr><th>Feld</th><th>Bedeutung</th></tr>
-  <tr><td>Anbietername</td><td>Erscheint zusätzlich zum Systemnamen auf einer eigenen OLED-Seite und im Kopfbereich der Weboberfläche, sobald gesetzt.</td></tr>
+  <tr><td>Anbietername</td><td>Erscheint zusätzlich zum Systemnamen im Kopfbereich der Weboberfläche, sobald gesetzt.</td></tr>
   <tr><td>Logo hochladen</td><td>Eigenes Formular unterhalb des Haupt-Speichern-Buttons. Erwartet eine vorkonvertierte Rohdatei: 128×64 Pixel, 1 Bit pro Pixel, MSB-zuerst je Zeile, genau 1024 Byte — jede andere Größe wird abgelehnt.</td></tr>
   <tr><td>Logo entfernen</td><td>Nur sichtbar, wenn aktuell ein Logo hinterlegt ist.</td></tr>
 </table>
 <p>Name und/oder Logo sind unabhängig voneinander optional — ohne beides
-bleibt das Feature vollständig unsichtbar (keine leere OLED-Zusatzseite,
-kein Kopfbereich-Banner).</p>
+bleibt das Feature vollständig unsichtbar (kein Kopfbereich-Banner).</p>
 
 <h3>Konfiguration (XML)</h3>
 <p>„XML Export" lädt die aktuelle Konfiguration als
@@ -712,7 +557,7 @@ entspricht dem in Abschnitt 4.2 konfigurierten Wert (Default:
   <tr><th>OID</th><th>Bedeutung</th></tr>
   <tr><td><span class="code">.1.3.6.1.4.1.99999.1.1.0</span></td><td>Systemname</td></tr>
   <tr><td><span class="code">.1.3.6.1.4.1.99999.1.2.0</span></td><td>Firmwareversion</td></tr>
-  <tr><td><span class="code">.1.3.6.1.4.1.99999.1.3.0</span></td><td>Systemtyp (fest: „Sensormeter WLAN")</td></tr>
+  <tr><td><span class="code">.1.3.6.1.4.1.99999.1.3.0</span></td><td>Systemtyp (fest: „Sensormeter WLAN Lite")</td></tr>
   <tr><td><span class="code">.1.3.6.1.4.1.99999.2.2.0</span></td><td>WLAN-IP</td></tr>
   <tr><td><span class="code">.1.3.6.1.4.1.99999.2.3.0</span></td><td>WLAN-RSSI (dBm)</td></tr>
   <tr><td><span class="code">.1.3.6.1.4.1.99999.3.1.0</span></td><td>Sensorname („DHT22")</td></tr>
@@ -770,9 +615,6 @@ separat gespeichert.</p>
 Anbietername und/oder ein Logo (Abschnitt 4.2). Beides einzeln optional —
 ohne beides bleibt das Gerät unverändert.</p>
 <ul>
-  <li><b>OLED</b>: eigene Seite in der Rotation, nur wenn Name oder Logo
-  gesetzt sind (siehe Abschnitt 3). Zeigt bevorzugt das Logo vollflächig,
-  ohne Logo den Anbietername als Textzeile.</li>
   <li><b>Weboberfläche</b>: Logo (falls vorhanden) und Anbietername
   erscheinen im Kopfbereich jeder Seite.</li>
   <li><b>Logo-Format</b>: 128×64 Pixel, 1 Bit pro Pixel, MSB-zuerst je
@@ -828,7 +670,7 @@ Werks-Default aktiv statt eines Fehlers.</p>
               mask="255.255.255.0" gateway="192.168.1.1" dns="" pendingTest="false"/&gt;
     &lt;/network&gt;
     &lt;system&gt;
-        &lt;name&gt;Sensormeter WLAN&lt;/name&gt;
+        &lt;name&gt;Sensormeter WLAN Lite&lt;/name&gt;
         &lt;password&gt;installer&lt;/password&gt;
     &lt;/system&gt;
     &lt;syslog&gt;
@@ -1011,10 +853,9 @@ das Gerät kehrte nach diesem Ablauf exakt in den Ausgangszustand zurück
   <tr><th>Problem</th><th>Mögliche Ursache / Lösung</th></tr>
   <tr><td>Board wird von Windows nicht erkannt</td><td>CP2102-/CH340-USB-Treiber fehlt — installieren, danach Geräte-Manager prüfen</td></tr>
   <tr><td>Flash-Vorgang schlägt fehl</td><td>Falscher COM-Port (<span class="code">-Port COM&lt;n&gt;</span> angeben), Board nicht angeschlossen, BOOT-Taste während des Uploads gedrückt halten (falls kein Auto-Reset-Chip verbaut ist), oder anderes Programm blockiert den seriellen Port (z. B. offener serieller Monitor oder eine laufende Serial-Sitzung aus Abschnitt 8)</td></tr>
-  <tr><td>OLED bleibt dunkel</td><td>I2C-Verdrahtung prüfen (SDA→GPIO21, SCL→GPIO22, siehe <span class="code">docs/verdrahtung.pdf</span>), I2C-Adresse muss 0x3C sein</td></tr>
   <tr><td>Sensorwert bleibt „Sensor --"</td><td>DHT22-Verdrahtung prüfen (Data→GPIO4), Sensor braucht nach dem Boot ggf. einen Moment bis zur ersten gültigen Messung</td></tr>
-  <tr><td>Gerät bleibt dauerhaft im Fallback-Modus („Fallback aktiv" auf dem OLED)</td><td>Verbindungsversuch zum konfigurierten WLAN schlägt weiter fehl — mit dem Access Point „installer"/„installer" verbinden (Abschnitt 2.2) und Zugangsdaten über „Verbinden &amp; testen" korrigieren, oder per USB das <span class="code">wifi</span>-Kommando nutzen (Abschnitt 8)</td></tr>
-  <tr><td>Webinterface nicht erreichbar</td><td>IP-Adresse über das OLED (Abschnitt 3, Seite 2), <span class="code">http://&lt;systemname&gt;.local/</span> (mDNS) oder per USB das <span class="code">status</span>-Kommando (Abschnitt 8) prüfen; bei kürzlich geänderter Static-IP ggf. neue Adresse verwenden</td></tr>
+  <tr><td>Gerät bleibt dauerhaft im Fallback-Modus</td><td>Verbindungsversuch zum konfigurierten WLAN schlägt weiter fehl — mit dem Access Point „installer"/„installer" verbinden (Abschnitt 2.2) und Zugangsdaten über „Verbinden &amp; testen" korrigieren, oder per USB das <span class="code">wifi</span>-Kommando nutzen (Abschnitt 8)</td></tr>
+  <tr><td>Webinterface nicht erreichbar</td><td>IP-Adresse über <span class="code">http://&lt;systemname&gt;.local/</span> (mDNS) oder per USB das <span class="code">status</span>-Kommando (Abschnitt 8) prüfen; bei kürzlich geänderter Static-IP ggf. neue Adresse verwenden</td></tr>
   <tr><td>Neue statische IP wird als „bereits belegt" abgelehnt</td><td>Ein anderes Gerät im Netz antwortet unter dieser Adresse (Abschnitt 4.2) — im Router/DHCP-Server nachsehen, wer die Adresse belegt, oder eine andere, freie Adresse wählen. Bei einem echten Fehlalarm (z. B. Firewall auf dem anderen Gerät antwortet fälschlich) hilft nur eine andere Adresse, da der Check bewusst konservativ ist</td></tr>
   <tr><td>„IP-Einstellungen übernehmen" meldet „Kein DHCP-Server gefunden"</td><td>Im Zielnetz ist kein DHCP-Server aktiv, oder das Gerät ist gerade nicht mit dem richtigen Netz assoziiert — bei Bedarf stattdessen eine statische IP eintragen (Weboberfläche oder per USB das <span class="code">ip</span>-Kommando, Abschnitt 8), oder DHCP im Router prüfen</td></tr>
   <tr><td>Web-Login schlägt fehl / Gerät im Netzwerk gar nicht erreichbar</td><td>Benutzername immer „admin"; Passwort wurde ggf. bereits geändert (siehe Abschnitt 4.1) — bei Passwortverlust hilft ein Werksreset mit Umfang „Nur Konfiguration" oder „Alles" auf der Einstellungsseite (Abschnitt 4.2), der BOOT-Taster direkt am Gerät (3s + 20s halten, dann loslassen, siehe Abschnitt 3.1) oder das <span class="code">reset</span>-Kommando per USB (Abschnitt 8)</td></tr>

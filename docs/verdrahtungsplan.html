@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Sensormeter WLAN — Verdrahtungsplan (interaktiv)</title>
+<title>Sensormeter WLAN Lite — Verdrahtungsplan (interaktiv)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
@@ -76,22 +76,19 @@
       <line x1="24" y1="24.67" x2="31.07" y2="17.6" stroke="#E9E4D8" stroke-width="2.8" stroke-linecap="round"/>
       <circle cx="24" cy="24.67" r="2.6" fill="#E9E4D8"/>
     </svg>
-    <h1>SENSORMETER WLAN — VERDRAHTUNGSPLAN</h1>
+    <h1>SENSORMETER WLAN LITE — VERDRAHTUNGSPLAN</h1>
   </div>
-  <div class="subtitle">Generisches ESP32-WROOM-32 DevKit (30-Pin, USB-C) + DHT22 + OLED SSD1306 (0,96", 128×64, I2C)</div>
+  <div class="subtitle">Generisches ESP32-WROOM-32 DevKit (30-Pin, USB-C) + DHT22 (ohne Display)</div>
   <div class="badges">
     <span class="badge badge-orange">GPIO4 · DHT22</span>
-    <span class="badge">GPIO21/22 · I2C OLED</span>
-    <span class="badge">github.com/peterhagelhof7-cmd/sensormeter-wlan</span>
+    <span class="badge">github.com/peterhagelhof7-cmd/sensormeter-wlan-lite</span>
   </div>
 </header>
 
 <div class="callout">
   <div class="callout-title">Status</div>
-  Diese interaktive Fassung übernimmt den Verkabelungsstand aus
-  <code>docs/verdrahtung.pdf</code> (dort dieselben Angaben als druckbares
-  PDF). Einfachstes Schema der Familie: kein RJ45-Modularanschluss, kein
-  Ethernet - nur DHT22 und OLED direkt am DevKit.
+  Einfachstes Schema der Familie: kein RJ45-Modularanschluss, kein
+  Ethernet, kein Display - nur der DHT22 direkt am DevKit (drei Adern).
 </div>
 
 <h2>Bauteile</h2>
@@ -99,18 +96,16 @@
   <tr><th>Bauteil</th><th>Anschlüsse</th></tr>
   <tr><td>ESP32-WROOM-32 DevKit, 30-Pin, USB-C</td><td>—</td></tr>
   <tr><td>DHT22 / AM2302, 3-Pin-Modul (mit eingebautem Pull-up)</td><td>VCC, GND, DATA (nicht die nackte 4-Pin-Sensorvariante ohne Modulplatine - die bräuchte einen externen Pull-up)</td></tr>
-  <tr><td>OLED SSD1306, 0,96", 128×64, I2C, 4-Pin</td><td>VCC, GND, SCL, SDA</td></tr>
 </table>
 
 <h2>Pinbelegung</h2>
 <table>
   <tr><th>ESP32-Pin</th><th>Verbindet mit</th><th>Funktion</th></tr>
-  <tr><td><code>3V3</code></td><td>DHT22 VCC <b>und</b> OLED VCC</td><td><span class="dot" style="background:#c0392b;"></span>Versorgung 3,3V - bewusst nicht VIN/5V, damit die Datenleitungen ohne Pegelwandler direkt an die 3,3V-GPIOs dürfen</td></tr>
-  <tr><td><code>GND</code></td><td>DHT22 GND <b>und</b> OLED GND</td><td><span class="dot" style="background:#1c2430;"></span>Masse (beliebiger GND-Pin, alle sind intern verbunden)</td></tr>
+  <tr><td><code>3V3</code></td><td>DHT22 VCC</td><td><span class="dot" style="background:#c0392b;"></span>Versorgung 3,3V - bewusst nicht VIN/5V, damit die Datenleitung ohne Pegelwandler direkt an den 3,3V-GPIO darf</td></tr>
+  <tr><td><code>GND</code></td><td>DHT22 GND</td><td><span class="dot" style="background:#1c2430;"></span>Masse (beliebiger GND-Pin, alle sind intern verbunden)</td></tr>
   <tr><td><code>GPIO4</code> (D4)</td><td>DHT22 DATA</td><td><span class="dot" style="background:#2e6da4;"></span>1-Wire-Digitalsignal</td></tr>
-  <tr><td><code>GPIO21</code> (D21)</td><td>OLED SDA</td><td><span class="dot" style="background:#5c9e6c;"></span>I2C-Datenleitung (Arduino-ESP32-Standard, <code>Wire.begin()</code> ohne Argumente)</td></tr>
-  <tr><td><code>GPIO22</code> (D22)</td><td>OLED SCL</td><td><span class="dot" style="background:#c8622a;"></span>I2C-Taktleitung (Arduino-ESP32-Standard)</td></tr>
 </table>
+<p class="hint" style="font-size:10px;color:#6b7280;">Hinweis: Der BOOT-Taster (GPIO0) und die Onboard-LED (GPIO2) für den Werksreset sind bereits auf dem DevKit vorhanden und brauchen keine externe Verdrahtung.</p>
 
 <h2>Schema</h2>
 <p class="hint" style="font-size:10px;color:#6b7280;margin-top:-1mm;">Interaktiv: Klick auf einen Draht hebt ihn hervor und zeigt Start-/Zielpin unten an. Klick auf die freie Fläche hebt die Auswahl wieder auf.</p>
@@ -127,15 +122,11 @@
     <text x="25" y="87" text-anchor="end">3V3</text>
     <text x="25" y="111" text-anchor="end">GND</text>
     <text x="25" y="135" text-anchor="end" font-weight="700" fill="#2e6da4">GPIO4 (D4)</text>
-    <text x="25" y="159" text-anchor="end" font-weight="700" fill="#5c9e6c">GPIO21 (D21)</text>
-    <text x="25" y="183" text-anchor="end" font-weight="700" fill="#c8622a">GPIO22 (D22)</text>
   </g>
   <g fill="#8a93a3">
     <circle cx="30" cy="83" r="2.5" fill="#c0392b"/>
     <circle cx="30" cy="107" r="2.5" fill="#1c2430"/>
     <circle cx="30" cy="131" r="2.5" fill="#2e6da4"/>
-    <circle cx="30" cy="155" r="2.5" fill="#5c9e6c"/>
-    <circle cx="30" cy="179" r="2.5" fill="#c8622a"/>
   </g>
 
   <!-- DHT22 module -->
@@ -146,34 +137,16 @@
   <circle cx="520" cy="135" r="3" fill="#1c2430"/><text x="530" y="139" font-size="9">GND</text>
   <circle cx="520" cy="155" r="3" fill="#2e6da4"/><text x="530" y="159" font-size="9">DATA</text>
 
-  <!-- OLED module -->
-  <rect x="500" y="200" width="150" height="130" rx="4" fill="#f2f0e9" stroke="#c7c2b4"/>
-  <text x="575" y="220" text-anchor="middle" font-size="10" font-weight="700">OLED SSD1306</text>
-  <text x="575" y="233" text-anchor="middle" font-size="8" fill="#6b7280">0,96" · 128×64 · I2C</text>
-  <circle cx="520" cy="255" r="3" fill="#c0392b"/><text x="530" y="259" font-size="9">VCC</text>
-  <circle cx="520" cy="275" r="3" fill="#1c2430"/><text x="530" y="279" font-size="9">GND</text>
-  <circle cx="520" cy="295" r="3" fill="#5c9e6c"/><text x="530" y="299" font-size="9">SDA</text>
-  <circle cx="520" cy="315" r="3" fill="#c8622a"/><text x="530" y="319" font-size="9">SCL</text>
 
   <!-- Wires: 3V3 -> both VCC (red) -->
   <path class="wire-hit" data-wire="w1" d="M30,83 C 300,83 300,115 500,115"/>
   <path class="wire" data-wire="w1" data-from="3V3" data-to="DHT22 VCC" d="M30,83 C 300,83 300,115 500,115" fill="none" stroke="#c0392b" stroke-width="1.6"/>
-  <path class="wire-hit" data-wire="w2" d="M30,83 C 300,83 300,255 500,255"/>
-  <path class="wire" data-wire="w2" data-from="3V3" data-to="OLED VCC" d="M30,83 C 300,83 300,255 500,255" fill="none" stroke="#c0392b" stroke-width="1.6"/>
   <!-- Wires: GND -> both GND (black) -->
   <path class="wire-hit" data-wire="w3" d="M30,107 C 310,107 310,135 500,135"/>
   <path class="wire" data-wire="w3" data-from="GND" data-to="DHT22 GND" d="M30,107 C 310,107 310,135 500,135" fill="none" stroke="#1c2430" stroke-width="1.6"/>
-  <path class="wire-hit" data-wire="w4" d="M30,107 C 310,107 310,275 500,275"/>
-  <path class="wire" data-wire="w4" data-from="GND" data-to="OLED GND" d="M30,107 C 310,107 310,275 500,275" fill="none" stroke="#1c2430" stroke-width="1.6"/>
   <!-- Wire: GPIO4 -> DHT22 DATA (blue) -->
   <path class="wire-hit" data-wire="w5" d="M30,131 C 320,131 320,155 500,155"/>
   <path class="wire" data-wire="w5" data-from="GPIO4 (D4)" data-to="DHT22 DATA" d="M30,131 C 320,131 320,155 500,155" fill="none" stroke="#2e6da4" stroke-width="1.6"/>
-  <!-- Wire: GPIO21 -> OLED SDA (green) -->
-  <path class="wire-hit" data-wire="w6" d="M30,155 C 350,155 350,295 500,295"/>
-  <path class="wire" data-wire="w6" data-from="GPIO21 (D21)" data-to="OLED SDA" d="M30,155 C 350,155 350,295 500,295" fill="none" stroke="#5c9e6c" stroke-width="1.6"/>
-  <!-- Wire: GPIO22 -> OLED SCL (orange) -->
-  <path class="wire-hit" data-wire="w7" d="M30,179 C 360,179 360,315 500,315"/>
-  <path class="wire" data-wire="w7" data-from="GPIO22 (D22)" data-to="OLED SCL" d="M30,179 C 360,179 360,315 500,315" fill="none" stroke="#c8622a" stroke-width="1.6"/>
 </svg>
 <div id="wireInfo" class="wire-info">Klicke auf einen Draht, um Start- und Zielpin anzuzeigen.</div>
 <script>
@@ -229,7 +202,7 @@ Flash-SPI, auf DevKits ohnehin nicht herausgeführt). Details siehe
 <code>docs/entscheidungen.md</code>.</p>
 
 <footer>
-  Sensormeter WLAN — Verdrahtungsplan (interaktive Kurzfassung von verdrahtung.pdf) · github.com/peterhagelhof7-cmd/sensormeter-wlan ·
+  Sensormeter WLAN Lite — Verdrahtungsplan · github.com/peterhagelhof7-cmd/sensormeter-wlan-lite ·
   Entwickelt mit Unterstützung von Claude (Anthropic) als Coding-Assistent
 </footer>
 

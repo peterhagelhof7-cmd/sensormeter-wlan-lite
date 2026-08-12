@@ -7,3 +7,7 @@
 !firmware/releases/*.bin
 firmware/logs/
 firmware/data/
+
+# Generierte PDF-Doku wird nicht mehr versioniert (nur die HTML-/MD-Quellen);
+# bei Bedarf lokal aus dem HTML drucken.
+docs/*.pdf

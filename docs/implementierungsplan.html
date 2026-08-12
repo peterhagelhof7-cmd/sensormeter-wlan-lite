@@ -1,4 +1,4 @@
-<title>Sensormeter WLAN — Implementierungsplan</title>
+<title>Sensormeter WLAN Lite — Implementierungsplan</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root {
@@ -312,7 +312,7 @@
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Sensormeter WLAN · ESP32-WROOM-32 DevKit · v0.9.0-rc1 (Beta)</div>
+    <div class="eyebrow">Sensormeter WLAN Lite · ESP32-WROOM-32 DevKit · v1.0.0</div>
     <div style="display:flex; align-items:center; gap:12px;">
       <svg viewBox="0 0 48 48" fill="none" width="30" height="30" style="flex-shrink:0;">
         <path d="M24,9 L37.6,32.5 L10.4,32.5 Z" stroke="var(--line)" stroke-width="2.2" stroke-linejoin="round"/>
@@ -377,7 +377,7 @@
             <h3>Projektstruktur &amp; Boot-Zustandsautomat</h3>
             <div class="card-modules">DataManager · ConfigManager · NetworkManager · TimeManager · StorageManager (Gerüst)</div>
             <ul>
-              <li>PlatformIO-Projekt (Board esp32dev), Pin-Definitionen zentral (I2C GPIO21/22, DHT22 GPIO4)</li>
+              <li>PlatformIO-Projekt (Board esp32dev), Pin-Definitionen zentral (DHT22 GPIO4, BOOT-Taster GPIO0, Status-LED GPIO2)</li>
               <li>Zustandsmodell: Boot → Init → WLAN Check → Run / Fallback (kein LAN-Zweig)</li>
               <li>DataManager mutex-geschützt von Anfang an (Vorbild: Sensormeter-Projekt)</li>
             </ul>
@@ -476,16 +476,16 @@
       <div class="stage-body">
         <div class="stage-label">
           <span class="stage-num">STUFE 5</span>
-          <span class="stage-title">Display</span>
+          <span class="stage-title">Bedienung / Reset</span>
         </div>
         <div class="cards single">
           <div class="card">
             <div class="card-head"><span class="card-code">P4</span></div>
-            <h3>OLED SSD1306 (I2C, Standardpins)</h3>
-            <div class="card-modules">DisplayManager</div>
+            <h3>BOOT-Taster-Werksreset (ohne Display)</h3>
+            <div class="card-modules">ButtonManager</div>
             <ul>
-              <li>Boot-Screen mit Countdown</li>
-              <li>Rotierende Seiten (Systemname/WLAN-IP/Uhrzeit/Sensorwert/Status), 10s-Takt</li>
+              <li>3s + 20s Halten, Auslösung erst beim Loslassen (Fail-Safe)</li>
+              <li>Feedback über Onboard-LED (GPIO2): Blinken im Countdown, Dauerlicht bei „Loslassen zum Bestätigen"</li>
             </ul>
             <div class="card-foot">
               <span class="dep">Voraussetzung: <span class="mono">P1, P3</span></span>
@@ -602,7 +602,7 @@
   </div>
 
   <footer>
-    Sensormeter WLAN — <span class="mono">lastenheft.txt</span> ist das führende
+    Sensormeter WLAN Lite — <span class="mono">lastenheft.txt</span> ist das führende
     Anforderungsdokument, dieser Plan sowie <span class="mono">pflichtenheft.txt</span>
     leiten sich daraus ab. Architektur und Phasenaufteilung bewusst analog zum
     Sensormeter-Projekt (WT32-ETH01), um beide Produktlinien konsistent zu halten.

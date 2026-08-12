@@ -1448,3 +1448,41 @@ Neustarts ausser den absichtlich ausgeloesten).
 
 Workaround bis zur vollstaendigen Behebung: Firmware-Updates seriell
 statt per OTA einspielen (`pio run --target upload`).
+
+## 2026-08-13 — Umbau zu "Sensormeter WLAN Lite" (Display entfernt, Rename)
+
+Das Projekt wird zur **display-losen Variante "Sensormeter WLAN Lite"**
+umgebaut; kuenftig soll es zusaetzlich einen neuen (nicht-Lite)
+`sensormeter-wlan` geben. Hardware bleibt (ESP32-WROOM-32 DevKit + DHT22
+an GPIO4), **das OLED SSD1306 entfaellt komplett**.
+
+Entscheidungen:
+
+- **`DisplayManager` entfernt** (OLED-Treiber, sechs rotierende Infoseiten,
+  Boot-Countdown, Fallback-IP-Seite), `Adafruit SSD1306` aus `lib_deps`,
+  die frueheren I2C-Pins 21/22 sind wieder frei.
+- **Neuer `ButtonManager`**: der BOOT-Taster-Werksreset bleibt, die
+  Taster-Logik wurde 1:1 aus dem DisplayManager herausgeloest. Da es kein
+  Display fuer den Countdown mehr gibt, laeuft das Feedback jetzt ueber die
+  **Onboard-LED (GPIO2)**: Blinken waehrend der 20s-Countdown-Phase,
+  Dauerlicht bei "Loslassen zum Bestaetigen". Timing (3s + 20s) und der
+  Fail-Safe (Ausloesung erst beim Loslassen) unveraendert. Das fruehere
+  Durchblaettern der Seiten per kurzem Tastentipp entfaellt ersatzlos.
+- **Branding bleibt** unveraendert - es war bereits web-only (Anbietername
+  + 128x64-1bpp-Logo werden ueber `/branding/logo.bmp` im Web-Header
+  gezeigt). Nur die zusaetzliche OLED-Branding-Seite fiel weg.
+- **OTA-Projekt-ID `SENSORMETER-WLAN` -> `SENSORMETER-WLAN-LITE`**,
+  Version auf **1.0.0**. Folge: der Wechsel von der alten Nicht-Lite-
+  Firmware auf Lite geht **nur seriell** (die OTA-Herkunftspruefung lehnt
+  den Projektwechsel bewusst ab). Genau das schuetzt spaeter davor, dass
+  sich Lite und der kuenftige neue `sensormeter-wlan` gegenseitig per OTA
+  installieren.
+- **Umbenennungen**: Default-Systemname und SNMP-Systemtyp auf
+  "Sensormeter WLAN Lite", GitHub-Repo `sensormeter-wlan` ->
+  `sensormeter-wlan-lite` (Redirect bleibt).
+- **PDFs aus dem Repo genommen** (nur noch HTML-Doku), Doku (README,
+  Onepager, Verdrahtungsplan, Implementierungsplan, Admin-Guide,
+  Stueckliste) auf die display-lose Variante aktualisiert.
+
+Build gruen (esp32dev, Flash ~54,4 % / RAM ~17,1 %). Auf echter Hardware
+noch nicht verifiziert (v.a. das LED-Reset-Feedback).
