@@ -17,7 +17,7 @@
 // Nur ein statischer Link fuer den Admin-Browser, kein Geraet-seitiger
 // Netzwerkzugriff - daher unproblematisch ohne HTTPS-Client (siehe
 // docs/entscheidungen.md, Vorbild Sensormeter-Projekt).
-#define GITHUB_REPO_SLUG "peterhagelhof7-cmd/sensormeter-wlan"
+#define GITHUB_REPO_SLUG "peterhagelhof7-cmd/sensormeter-wlan-lite"
 
 namespace {
 // Sicherheits-Feature: vor dem Uebernehmen einer neu gesetzten statischen
@@ -131,7 +131,7 @@ bool WebServerManager::checkAuth(AsyncWebServerRequest* request) {
   if (!request->authenticate("admin", _config.getConfig().settingsPassword.c_str())) {
     // Fester Benutzername "admin" - Lastenheft definiert nur ein Passwort,
     // keinen Benutzernamen. Realm-Text gibt einen Hinweis im Browser-Dialog.
-    request->requestAuthentication("Sensormeter WLAN (Benutzername: admin)");
+    request->requestAuthentication("Sensormeter WLAN Lite (Benutzername: admin)");
     return false;
   }
   return true;

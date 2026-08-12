@@ -9,9 +9,10 @@
 // Werte, die zur Kompilierzeit feststehen muessen.
 // ============================================================================
 
-#define DEVICE_FIRMWARE_VERSION "0.9.3"
+#define DEVICE_FIRMWARE_VERSION "1.0.0"
 
 // Projekt-Kennung fuer die OTA-Herkunftspruefung (siehe OtaManager.h/.cpp) -
 // eindeutig je Sensormeter-Projekt, damit sich z.B. die .bin von Sensormeter
-// Display nicht versehentlich auf diesem Geraet installieren laesst.
-#define FIRMWARE_PROJECT_ID "SENSORMETER-WLAN"
+// Display (oder des kuenftigen NICHT-Lite sensormeter-wlan) nicht versehentlich
+// auf diesem Geraet installieren laesst.
+#define FIRMWARE_PROJECT_ID "SENSORMETER-WLAN-LITE"

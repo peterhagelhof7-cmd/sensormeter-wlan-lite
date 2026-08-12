@@ -29,7 +29,7 @@
 // </config>
 
 struct DeviceConfig {
-  String systemName = "Sensormeter WLAN";
+  String systemName = "Sensormeter WLAN Lite";
   String settingsPassword = "installer";
 
   // Kalibrierkorrektur (fester Grad-/Prozent-Versatz, positiv oder

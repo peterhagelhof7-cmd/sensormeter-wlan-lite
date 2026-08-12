@@ -1,11 +1,15 @@
 // ============================================================================
-// Sensormeter WLAN - Phase P7: Syslog
+// Sensormeter WLAN Lite
+//
+// Display-lose Variante: gleiches Board (ESP32-WROOM-32) + DHT22, aber kein
+// OLED mehr - Bedienung/Anzeige ausschliesslich ueber die Weboberflaeche,
+// Werksreset ueber den BOOT-Taster mit LED-Feedback (siehe ButtonManager).
 //
 // Verdrahtet alle Module. ConfigManager laedt/speichert config.xml auf
 // LittleFS; NetworkManager bringt WLAN (DHCP/statisch, Fallback-AP) hoch und
 // treibt den Boot-Zustandsautomaten aus docs/lastenheft.txt an; TimeManager
 // haengt sich mit der NTP-Sync-Kette daran; SensorManager liest DHT22 im
-// 60s-Takt; DisplayManager zeigt Boot-Countdown und rotierende Infoseiten;
+// 60s-Takt; ButtonManager treibt den BOOT-Taster-Werksreset (LED-Feedback);
 // WebServerManager stellt Hauptseite, Einstellungsseite, REST-API und
 // lokalen OTA-Upload bereit (async, Port 80); SNMPManager beantwortet
 // SNMP-v1/v2c-GET-Anfragen read-only (Port 161); SyslogManager sendet bei
@@ -14,11 +18,7 @@
 // Anbindung Discovery- und State-Payloads per MQTT (siehe
 // sensormeter-poe/repo/docs/lastenheft.txt Abschnitt 16, docs/entscheidungen.md);
 // BrandingManager haelt den optionalen Anbieter-Namen/das Logo (Weisslabel),
-// das DisplayManager als eigene OLED-Seite und WebServerManager im
-// Seiten-Header zeigt, sobald konfiguriert.
-//
-// Damit sind alle Phasen aus docs/implementierungsplan.html (P0-P7)
-// umgesetzt.
+// das WebServerManager im Seiten-Header zeigt, sobald konfiguriert.
 // ============================================================================
 
 #include <Arduino.h>
@@ -27,9 +27,9 @@
 #include <esp_task_wdt.h>
 
 #include "BrandingManager.h"
+#include "ButtonManager.h"
 #include "ConfigManager.h"
 #include "DataManager.h"
-#include "DisplayManager.h"
 #include "MqttManager.h"
 #include "NetworkManager.h"
 #include "OtaManager.h"
@@ -73,7 +73,7 @@ NetworkManager networkManager(dataManager, configManager);
 TimeManager timeManager(dataManager, networkManager);
 SensorManager sensorManager(dataManager, timeManager, configManager);
 BrandingManager brandingManager(configManager);
-DisplayManager displayManager(dataManager, configManager, networkManager, timeManager, brandingManager);
+ButtonManager buttonManager(dataManager, configManager);
 OtaManager otaManager;
 WebServerManager webServerManager(dataManager, configManager, networkManager, otaManager, timeManager,
                                    brandingManager);
@@ -297,7 +297,7 @@ void setup() {
   Serial.begin(115200);
   delay(300);
   Serial.println();
-  Serial.print("=== Sensormeter WLAN ");
+  Serial.print("=== Sensormeter WLAN Lite ");
   Serial.print(DEVICE_FIRMWARE_VERSION);
   Serial.println(" ===");
   Serial.println(kFirmwareIdentityMarker);
@@ -312,7 +312,7 @@ void setup() {
   timeManager.begin();
   sensorManager.begin();
   brandingManager.begin();
-  displayManager.begin();
+  buttonManager.begin();
   syslogManager.begin();
   mqttManager.begin();
 
@@ -350,7 +350,7 @@ void loop() {
   networkManager.loop();
   timeManager.loop();
   sensorManager.loop();
-  displayManager.loop();
+  buttonManager.loop();
   snmpManager.loop();
   syslogManager.loop();
   mqttManager.loop();

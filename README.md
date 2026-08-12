@@ -1,4 +1,8 @@
-# Sensormeter WLAN
+# Sensormeter WLAN Lite
+
+> **Display-lose Variante** des Sensormeter-WLAN-Projekts: gleiches Board (ESP32-WROOM-32)
+> und DHT22, aber **ohne OLED-Anzeige**. Bedienung und Anzeige laufen ausschließlich über die
+> Weboberfläche; der Werksreset über den BOOT-Taster bleibt (Feedback jetzt über die Onboard-LED).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/projektfamilie-dark.png">
@@ -8,11 +12,11 @@
 
 ESP32-basierter Umweltsensor (Temperatur/Luftfeuchte, DHT22) auf einem
 generischen, günstigen ESP32-WROOM-32-DevKit (reines WLAN, kein
-Ethernet). Zeigt Werte lokal auf einem OLED an, stellt sie über eine
+Ethernet). Stellt die Werte über eine
 Weboberfläche, SNMP und Syslog bereit und meldet sich optional per
 MQTT-Discovery selbstständig bei Home Assistant an. Unterstützt zudem
 optionales Anbieter-Branding (Weisslabel): freier Anbietername plus
-Logo, wahlweise auf einer eigenen OLED-Seite und im Webseiten-Header.
+Logo im Webseiten-Header.
 Bewusst reduzierte,
 kostengünstigere Variante des
 [Sensormeter](https://github.com/peterhagelhof7-cmd/sensormeter)-Projekts
@@ -39,9 +43,9 @@ nutzt weiterhin Sensormeter bzw. Sensormeter PRO.
 | [docs/implementierungsplan.html](docs/implementierungsplan.html) | Visueller Implementierungsplan P0–P7 (lokal im Browser öffnen) |
 | [docs/stueckliste.md](docs/stueckliste.md) | Bauteile pro Gerät + Preisschätzung |
 | [docs/entscheidungen.md](docs/entscheidungen.md) | Entscheidungsprotokoll: Boardwahl, Pinbelegung, OTA-Partitionierung, SNMP-Kompatibilität, bekannte Abweichungen |
-| [docs/verdrahtung.pdf](docs/verdrahtung.pdf) | Pin-Tabelle + Verdrahtungsskizze (DHT22, OLED) |
+| [docs/verdrahtung.pdf](docs/verdrahtung.pdf) | Pin-Tabelle + Verdrahtungsskizze (DHT22) |
 | [docs/verdrahtungsplan.html](docs/verdrahtungsplan.html) | Interaktive Kurzfassung derselben Verdrahtung - Klick auf einen Draht im Schema hebt ihn hervor und zeigt Start-/Zielpin |
-| [docs/admin-guide.pdf](docs/admin-guide.pdf) ([HTML](docs/admin-guide.html)) | Admin-Guide: Inbetriebnahme, OLED-Anzeige, Weboberfläche, SNMP/Syslog/MQTT/Branding, Serial-Kommandozeile |
+| [docs/admin-guide.pdf](docs/admin-guide.pdf) ([HTML](docs/admin-guide.html)) | Admin-Guide: Inbetriebnahme, Weboberfläche, SNMP/Syslog/MQTT/Branding, Serial-Kommandozeile |
 | [docs/PRTG.md](docs/PRTG.md) | PRTG-Integration: OIDs, Geräte-Template-Import, Sensor-Übersicht |
 | [docs/prtg-template-sensormeter-wlan.odt](docs/prtg-template-sensormeter-wlan.odt) | Fertiges PRTG-Geräte-Template für Auto-Discovery |
 | [docs/ZABBIX.md](docs/ZABBIX.md) | Zabbix-Integration: OIDs, Template-Import, Host-Einrichtung, Trigger |
@@ -60,16 +64,16 @@ Sensormeter-Projekts.
 
 - Generisches ESP32-WROOM-32-DevKit (30- oder 38-Pin, reines WLAN)
 - DHT22/AM2302, 3-Pin-Modul, an GPIO4
-- OLED SSD1306, 0,96", 128×64, I2C an GPIO21 (SDA) / GPIO22 (SCL) —
-  ESP32-Standardbelegung, da kein Ethernet-PHY diese Pins blockiert
-  (Unterschied zum Sensormeter-Projekt, siehe `docs/entscheidungen.md`)
+- **Kein OLED-Display** (Lite-Variante) — die frühere I2C-Anzeige entfällt,
+  die Pins GPIO21/22 sind wieder frei
 - Kein zusätzliches Bauteil für die Bedienung nötig: der ohnehin auf jedem
-  DevKit vorhandene **BOOT-Taster** (GPIO0) dient zusätzlich als
-  Eingabe — kurzer Tipp blättert manuell durch die OLED-Seiten, langes
-  Halten (3s + 20s Countdown, Auslösung erst beim Loslassen als
-  Fail-Safe) löst einen Werksreset der Einstellungen aus. Der zweite
-  Taster (**EN**) ist reiner Hardware-Reset und lässt sich softwareseitig
-  nicht nutzen.
+  DevKit vorhandene **BOOT-Taster** (GPIO0) löst durch langes Halten
+  (3s + 20s Countdown, Auslösung erst beim Loslassen als Fail-Safe) einen
+  Werksreset der Einstellungen aus. Feedback über die **Onboard-LED (GPIO2)**:
+  blinkt während des Countdowns, leuchtet dauerhaft bei „Loslassen zum
+  Bestätigen". (Das frühere Durchblättern per kurzem Tipp entfällt mit dem
+  Display.) Der zweite Taster (**EN**) ist reiner Hardware-Reset und lässt
+  sich softwareseitig nicht nutzen.
 
 ## Firmware
 
@@ -79,12 +83,14 @@ Sensormeter-Projekts.
 [docs/entscheidungen.md](docs/entscheidungen.md#versionierung).
 
 Fertiges Binary für das lokale OTA-Update (kein PlatformIO nötig):
-[Releases → v0.9.4](https://github.com/peterhagelhof7-cmd/sensormeter-wlan/releases/tag/v0.9.4).
+[Releases](https://github.com/peterhagelhof7-cmd/sensormeter-wlan-lite/releases).
+Hinweis: Ein Wechsel von der früheren Nicht-Lite-Firmware auf Lite geht wegen
+der geänderten OTA-Projekt-ID **nur seriell** (OTA lehnt den Projektwechsel ab).
 
-Aktueller Stand: **P0–P7 code-vollständig, Board-Bringup abgeschlossen** —
-erstes Gerät läuft über mehrere Test-/Update-Zyklen stabil auf echter
-Hardware (DHT22, OLED, WLAN inkl. Fallback-AP, Taster, Webserver, SNMP,
-Syslog alle verifiziert), siehe
+Aktueller Stand: **Lite-Umbau (Display entfernt) code-vollständig** — die
+Nicht-Lite-Vorgängerversion lief über mehrere Test-/Update-Zyklen stabil auf
+echter Hardware (DHT22, WLAN inkl. Fallback-AP, Taster, Webserver, SNMP,
+Syslog verifiziert); die Lite-Variante ist auf HW noch zu verifizieren, siehe
 [docs/implementierungsplan.html](docs/implementierungsplan.html) und
 [docs/entscheidungen.md](docs/entscheidungen.md). MQTT/Home-Assistant-
 Anbindung ist geflasht und bootet sauber (deaktiviert per Default), aber
@@ -141,13 +147,12 @@ Enthalten (P0–P7, siehe [docs/implementierungsplan.html](docs/implementierungs
   Einstellungen + Verlaufsdaten) über die Einstellungsseite
 - `StorageManager`: LittleFS-Mount
 - `SensorManager`: DHT22-Abfrage alle 60s mit Plausibilitätsprüfung, konfigurierbare
-  Kalibrierkorrektur (°C/%, wirkt auf Anzeige, SNMP und CSV gleichermaßen),
+  Kalibrierkorrektur (°C/%, wirkt auf Web-Anzeige, SNMP und CSV gleichermaßen),
   Zeitpunkt der letzten Kalibrierung wird persistent mitgeführt
-- `DisplayManager`: OLED SSD1306, Boot-Countdown + 6 rotierende Infoseiten
-  (7 bei aktivem Anbieter-Branding), zentrierte Darstellung mit fester,
-  größerer Schrift - zu lange Zeilen (z.B. lange WLAN-SSIDs) laufen
-  waagerecht durch statt zu schrumpfen; BOOT-Taster zusätzlich als
-  Bedienelement (Seitenwechsel/Werksreset)
+- `ButtonManager`: BOOT-Taster-Werksreset ohne Display — 3s + 20s Countdown,
+  Auslösung erst beim Loslassen (Fail-Safe gegen verklemmten Taster), Feedback
+  über die Onboard-LED (GPIO2): Blinken während des Countdowns, Dauerlicht bei
+  „Loslassen zum Bestätigen"
 - `WebServerManager`/`OtaManager`: Hauptseite, passwortgeschützte
   Einstellungsseite (inkl. Sensor-Kalibrierkorrektur, nicht-blockierendem
   WLAN-Scan mit Direktverbindung-und-Test, Werksreset), REST-API, lokales
@@ -158,8 +163,8 @@ Enthalten (P0–P7, siehe [docs/implementierungsplan.html](docs/implementierungs
   (Sensor-Rolle, Temperatur/Luftfeuchte) — deaktiviert, solange kein
   Broker konfiguriert ist; siehe `docs/entscheidungen.md`
 - `BrandingManager`: optionales Anbieter-Branding (Weisslabel) - freier
-  Anbietername plus Logo (128x64, 1bpp, per Web-Upload), eigene
-  OLED-Seite und Web-Header-Anzeige, kein PNG/JPEG-Decoder eingebunden
+  Anbietername plus Logo (128x64, 1bpp, per Web-Upload), Anzeige im
+  Web-Header, kein PNG/JPEG-Decoder eingebunden
   (Logo wird als minimaler BMP on-the-fly ausgeliefert); siehe
   `docs/entscheidungen.md`
 - Serial-Kommandozeile (115200 Baud, + Enter) für den Fall, dass das Gerät

@@ -1,4 +1,4 @@
-# Stückliste (BOM) – Sensormeter WLAN
+# Stückliste (BOM) – Sensormeter WLAN Lite
 
 ## Pro Gerät
 
@@ -6,11 +6,10 @@
 |---|---|---|---|
 | ESP32-WROOM-32 DevKit (generisches Board, 30- oder 38-Pin, CP2102/CH340 USB-UART) | 1 | ~3–6 € | Reines WLAN, kein Ethernet nötig – siehe `entscheidungen.md` |
 | DHT22/AM2302, 3-Pin-Modul (mit eingebautem Pull-up) | 1 | ~3–7 € | Data → GPIO4 |
-| OLED SSD1306, 0,96", 128×64, I2C, 4-Pin | 1 | ~2–5 € | SDA → GPIO21, SCL → GPIO22 (ESP32-Standardbelegung, siehe `entscheidungen.md`) |
-| Jumper-Kabel (female-female, für DHT22 + OLED) | ~7 | < 1 € | Direktverdrahtung, kein Modulstecker/RJ45 nötig |
-| Netzteil 5V, ≥ 1 A (USB) | 1 | – | Analog zur Empfehlung im Sensormeter-Projekt; genaue Herleitung folgt nach Fertigstellung der Firmware (Strombudget hängt u. a. von der finalen WLAN-Sendeleistung/Displayhelligkeit ab) |
+| Jumper-Kabel (female-female, für DHT22) | ~3 | < 1 € | Direktverdrahtung, kein Modulstecker/RJ45 nötig |
+| Netzteil 5V, ≥ 1 A (USB) | 1 | – | Analog zur Empfehlung im Sensormeter-Projekt; genaue Herleitung folgt nach Fertigstellung der Firmware (Strombudget hängt u. a. von der finalen WLAN-Sendeleistung ab) |
 
-**Geschätzte Materialkosten pro Gerät: ~8–18 €** (ohne Kabel/Kleinteile,
+**Geschätzte Materialkosten pro Gerät: ~6–13 €** (ohne Kabel/Kleinteile,
 Preise Marktbeobachtung Stand 2026, schwanken je Händler/Region).
 
 Deutlich günstiger als das Sensormeter-Projekt (WT32-ETH01, Spezialboard
