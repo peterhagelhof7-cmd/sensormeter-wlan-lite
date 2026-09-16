@@ -1,5 +1,7 @@
 # Sensormeter WLAN Lite
 
+**▶ [Web-Flasher der Sensormeter-Familie](https://peterhagelhof7-cmd.github.io/sensormeter-family/)** — Firmware aller Geräte direkt im Browser flashen.
+
 > **Display-lose Variante** des Sensormeter-WLAN-Projekts: gleiches Board (ESP32-WROOM-32)
 > und DHT22, aber **ohne OLED-Anzeige**. Bedienung und Anzeige laufen ausschließlich über die
 > Weboberfläche; der Werksreset über den BOOT-Taster bleibt (Feedback jetzt über die Onboard-LED).
